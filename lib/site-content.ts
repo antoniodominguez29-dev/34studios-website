@@ -51,7 +51,7 @@ export const siteContent = {
       "34Studios ist ein visuelles Studio für editoriale Produktionen, leise Porträts und visuelle Narrative aus Identität, Präsenz und menschlicher Beobachtung."
   },
   header: {
-    ctaLabel: "Anfrage"
+    ctaLabel: "Projekt anfragen"
   },
   navItems: [
     { href: "#work", label: "Arbeiten" },
@@ -83,7 +83,7 @@ export const siteContent = {
     imageAlt: "Schwarz-weißes Editorial-Porträt einer Frau mit Fächer auf offenem Feld",
     captionLeft: "Identität / Präsenz / Bild als Sprache",
     captionRight: "Ausgabe 001",
-    primaryCta: { label: "Ausgabe ansehen", href: "#work" },
+    primaryCta: { label: "Arbeiten ansehen", href: "#work" },
     secondaryCta: { label: "Zusammenarbeit anfragen", href: "#briefing" }
   },
   work: {
@@ -98,7 +98,7 @@ export const siteContent = {
         imageAlt: "Nahes Editorial-Porträt mit direktem Blick und zurückhaltendem Licht",
         title: "Gesicht als Atmosphäre",
         note: "Leise Porträtarbeit, kontrollierter Blick, keine Dekoration.",
-        issue: "Motiv 01"
+        issue: "Studie 01"
       },
       {
         category: "Körperstudie",
@@ -106,7 +106,7 @@ export const siteContent = {
         imageAlt: "Reduzierte Körperstudie mit Haltung, Haut und negativem Raum",
         title: "Körper als Linie",
         note: "Eine Studie über Haltung, Haut, Stille und editoriale Zurückhaltung.",
-        issue: "Motiv 02"
+        issue: "Studie 02"
       },
       {
         category: "Rotstudie",
@@ -114,7 +114,7 @@ export const siteContent = {
         imageAlt: "Editoriales Porträt in rotem Licht mit kontrollierter emotionaler Spannung",
         title: "Roter Raum",
         note: "Farbe als Druck, nicht als Schmuck. Eine bewusst gehaltene Temperatur.",
-        issue: "Motiv 03"
+        issue: "Studie 03"
       },
       {
         category: "Identität",
@@ -122,7 +122,7 @@ export const siteContent = {
         imageAlt: "Frontale Porträtstudie mit Mantel, Distanz und Präsenz",
         title: "Äußere Schicht",
         note: "Stil, Abstand und Präsenz in einem direkten Bild.",
-        issue: "Motiv 04"
+        issue: "Studie 04"
       }
     ]
   },
@@ -205,7 +205,7 @@ export const siteContent = {
           "Porträt / leise Porträtarbeit",
           "Visuelle Reportage",
           "Kulturelles Projekt",
-          "Hochzeit / privates Ritual"
+          "Hochzeit / persönliche Begleitung"
         ]
       },
       {
