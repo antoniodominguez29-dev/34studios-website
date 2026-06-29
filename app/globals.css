@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --ink: #050505;
+  --bone: #f5f5f0;
+  --paper: #f4f2ec;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--paper);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0;
+  overflow-x: hidden;
+  text-rendering: geometricPrecision;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.noise-layer {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 82%);
+}
+
+.editorial-rule {
+  background: linear-gradient(90deg, transparent, rgba(245, 245, 240, 0.58), transparent);
+  height: 1px;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.editorial-link {
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.4rem;
+  transition:
+    opacity 240ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.32rem;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.editorial-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.editorial-button {
+  position: relative;
+  display: inline-flex;
+  min-height: 3.25rem;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid currentColor;
+  padding: 0 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1;
+  transition:
+    color 360ms ease,
+    border-color 360ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-button::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background: currentColor;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-button:hover {
+  transform: translateY(-1px);
+}
+
+.editorial-button:hover::before {
+  transform: scaleY(1);
+}
+
+.editorial-button-light {
+  color: var(--bone);
+}
+
+.editorial-button-light:hover {
+  color: var(--ink);
+}
+
+.editorial-button-dark {
+  color: rgba(245, 245, 240, 0.62);
+}
+
+.editorial-button-dark:hover {
+  color: var(--ink);
+  border-color: var(--bone);
+}
+
+.brief-option {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(245, 245, 240, 0.24);
+  padding: 1.05rem 0;
+  text-align: left;
+  transition:
+    color 320ms ease,
+    padding-left 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease;
+}
+
+.brief-option span:last-child {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  opacity: 0.48;
+}
+
+.brief-option:hover,
+.brief-option[aria-checked="true"] {
+  padding-left: 0.25rem;
+  border-color: rgba(245, 245, 240, 0.74);
+}
+
+.archive-button {
+  transition:
+    padding-left 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease,
+    opacity 420ms ease;
+}
+
+.archive-button:hover {
+  padding-left: 0.22rem;
+  border-color: rgba(245, 245, 240, 0.72);
+}
+
+.commission-row,
+.ledger-record {
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease,
+    background-color 420ms ease;
+}
+
+.commission-row:hover,
+.ledger-record:hover {
+  transform: translateX(0.18rem);
+}
+
+.commission-row:hover {
+  border-color: rgba(5, 5, 5, 0.56);
+}
+
+.ledger-record:hover {
+  background-color: rgba(5, 5, 5, 0.028);
+  border-color: rgba(5, 5, 5, 0.34);
+}
+
+select option {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
