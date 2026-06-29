@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { siteContent } from "../lib/site-content";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "34Studios | Image as Language",
-  description:
-    "34Studios is a visual studio for editorial commissions, quiet portraiture and visual narratives shaped by identity, presence and human observation."
+  title: siteContent.metadata.title,
+  description: siteContent.metadata.description
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="de">
       <body>{children}</body>
     </html>
   );

@@ -10,20 +10,16 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { siteContent, type BookingStepContent, type LeadContent, type LeadStatus } from "../lib/site-content";
+import {
+  siteContent,
+  type BookingData,
+  type BookingStepContent,
+  type LeadContent,
+  type LeadStatus
+} from "../lib/site-content";
 
 type WorkCategory = string;
 
-type BookingData = {
-  sessionType: string;
-  date: string;
-  location: string;
-  people: string;
-  style: string;
-  budget: string;
-  name: string;
-  contact: string;
-};
 type Lead = LeadContent;
 
 type BookingStep = BookingStepContent;
@@ -45,10 +41,6 @@ const emptyBooking: BookingData = {
   contact: ""
 };
 
-function generateBriefing(data: BookingData) {
-  return `${data.sessionType} in ${data.location} on ${data.date} for ${data.people} people. Desired direction: ${data.style}. Approx. budget: ${data.budget}. Contact: ${data.name}, ${data.contact}.`;
-}
-
 export default function Home() {
   const [activeWork, setActiveWork] = useState<WorkCategory>(workItems[0].category);
   const [activeSection, setActiveSection] = useState("home");
@@ -56,14 +48,16 @@ export default function Home() {
   const [booking, setBooking] = useState<BookingData>(emptyBooking);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [hasLoadedLeads, setHasLoadedLeads] = useState(false);
+  const [showStudioArchive, setShowStudioArchive] = useState(false);
   const [fieldError, setFieldError] = useState("");
+  const [submissionMessage, setSubmissionMessage] = useState("");
 
   const currentStep = bookingSteps[stepIndex];
   const selectedWork = workItems.find((item) => item.category === activeWork) ?? workItems[0];
 
   const draftBriefing = useMemo(() => {
     const completed = Object.values(booking).every(Boolean);
-    return completed ? generateBriefing(booking) : "";
+    return completed ? siteContent.booking.createBriefing(booking) : "";
   }, [booking]);
 
   useEffect(() => {
@@ -91,6 +85,25 @@ export default function Home() {
   }, [hasLoadedLeads, leads]);
 
   useEffect(() => {
+    const syncArchiveVisibility = () => {
+      setShowStudioArchive(window.location.hash === "#studio-ledger");
+    };
+
+    syncArchiveVisibility();
+    window.addEventListener("hashchange", syncArchiveVisibility);
+
+    return () => window.removeEventListener("hashchange", syncArchiveVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (showStudioArchive && window.location.hash === "#studio-ledger") {
+      window.requestAnimationFrame(() => {
+        document.getElementById("studio-ledger")?.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  }, [showStudioArchive]);
+
+  useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>("section[id]"));
     const observer = new IntersectionObserver(
       (entries) => {
@@ -108,11 +121,12 @@ export default function Home() {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, []);
+  }, [showStudioArchive]);
 
   function updateBooking(value: string) {
     setBooking((current) => ({ ...current, [currentStep.key]: value }));
     setFieldError("");
+    setSubmissionMessage("");
   }
 
   function handleBookingSubmit(event: FormEvent<HTMLFormElement>) {
@@ -129,11 +143,11 @@ export default function Home() {
       return;
     }
 
-    const briefing = generateBriefing(booking);
+    const briefing = siteContent.booking.createBriefing(booking);
     const lead: Lead = {
       ...booking,
       id: crypto.randomUUID(),
-      status: "New",
+      status: siteContent.ledger.initialStatus,
       briefing,
       createdAt: new Date().toISOString()
     };
@@ -142,8 +156,7 @@ export default function Home() {
     setBooking(emptyBooking);
     setStepIndex(0);
     setFieldError("");
-
-    window.location.hash = "studio-ledger";
+    setSubmissionMessage(siteContent.booking.successMessage);
   }
 
   function updateLeadStatus(id: string, status: LeadStatus) {
@@ -275,29 +288,55 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="bg-[#f4f2ec] px-5 py-24 text-[#070707] sm:px-8 sm:py-36 lg:px-14">
-        <Reveal className="grid gap-12 border-t border-[#080808] pt-6 lg:grid-cols-[0.42fr_1.58fr]">
-          <div>
-            <p className="mb-8 text-[11px] uppercase text-[#080808]/42">{siteContent.about.kicker}</p>
-            <p className="max-w-sm text-sm leading-7 text-[#080808]/58">{siteContent.about.statement}</p>
-          </div>
-          <div>
-            <p className="max-w-6xl text-4xl leading-[1.03] sm:text-6xl lg:text-[6.2rem]">
-              {siteContent.about.title}
-            </p>
-            <div className="mt-14 grid gap-10 lg:grid-cols-[0.48fr_0.52fr] lg:items-start">
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#080808]">
-                <CinematicImage
-                  src={siteContent.about.image}
-                  alt={siteContent.about.imageAlt}
-                  sizes="(min-width: 1024px) 36vw, 100vw"
-                  className="grayscale"
-                />
+      <section id="about" className="bg-[#f4f2ec] px-5 py-28 text-[#070707] sm:px-8 sm:py-40 lg:px-14">
+        <Reveal className="border-t border-[#080808] pt-6">
+          <div className="grid gap-14 lg:grid-cols-[0.32fr_1fr]">
+            <aside className="flex flex-col justify-between gap-16">
+              <div>
+                <p className="mb-9 text-[11px] uppercase text-[#080808]/42">{siteContent.about.kicker}</p>
+                <div className="grid gap-3 border-t border-[#080808]/22 pt-5">
+                  {siteContent.about.meta.map((item) => (
+                    <p key={item} className="text-[11px] uppercase leading-5 text-[#080808]/48">
+                      {item}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <div className="grid gap-7 text-base leading-8 text-[#080808]/62">
-                {siteContent.about.paragraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+              <p className="max-w-xs text-sm leading-7 text-[#080808]/58">{siteContent.about.statement}</p>
+            </aside>
+
+            <div>
+              <p className="max-w-6xl font-editorial text-5xl font-normal leading-[0.98] sm:text-7xl lg:text-[8.2vw]">
+                {siteContent.about.title}
+              </p>
+              <div className="mt-16 grid gap-12 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#080808] lg:mt-10">
+                  <CinematicImage
+                    src={siteContent.about.image}
+                    alt={siteContent.about.imageAlt}
+                    sizes="(min-width: 1024px) 34vw, 100vw"
+                    className="grayscale"
+                  />
+                </div>
+                <div className="grid gap-10">
+                  {siteContent.about.chapters.map((chapter, index) => (
+                    <article
+                      key={chapter.label}
+                      className="grid gap-5 border-t border-[#080808]/20 pt-5 sm:grid-cols-[92px_1fr]"
+                    >
+                      <p className="text-[11px] uppercase text-[#080808]/42">
+                        0{index + 1} / {chapter.label}
+                      </p>
+                      <p
+                        className={`leading-8 text-[#080808]/64 ${
+                          index === 0 ? "text-xl sm:text-2xl sm:leading-9" : "text-base"
+                        }`}
+                      >
+                        {chapter.text}
+                      </p>
+                    </article>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -383,6 +422,11 @@ export default function Home() {
                 </AnimatePresence>
 
                 {fieldError ? <p className="mt-4 text-sm text-white/62">{fieldError}</p> : null}
+                {submissionMessage ? (
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-white/62" aria-live="polite">
+                    {submissionMessage}
+                  </p>
+                ) : null}
 
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                   <button type="submit" className="editorial-button editorial-button-light">
@@ -413,66 +457,70 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="studio-ledger" className="bg-[#f4f2ec] px-5 py-24 text-[#070707] sm:px-8 sm:py-36 lg:px-14">
-        <Reveal className="mb-14 grid gap-8 border-t border-[#080808] pt-6 lg:grid-cols-[1fr_auto] lg:items-end">
-          <SectionHeader kicker="Studio Ledger" title="Private requests, held with editorial restraint." />
-          <p className="text-sm text-[#080808]/52">
-            {leads.length} private request{leads.length === 1 ? "" : "s"}
-          </p>
-        </Reveal>
+      {showStudioArchive ? (
+        <section id="studio-ledger" className="bg-[#f4f2ec] px-5 py-24 text-[#070707] sm:px-8 sm:py-36 lg:px-14">
+          <Reveal className="mb-14 grid gap-8 border-t border-[#080808] pt-6 lg:grid-cols-[1fr_auto] lg:items-end">
+            <SectionHeader kicker={siteContent.ledger.kicker} title={siteContent.ledger.title} />
+            <p className="text-sm text-[#080808]/52">
+              {siteContent.ledger.countLabel(leads.length)}
+            </p>
+          </Reveal>
 
-        <Reveal delay={0.08}>
-          <div className="border-t border-[#080808]/24">
-            {leads.length === 0 ? (
-              <p className="border-b border-[#080808]/18 py-10 text-base leading-8 text-[#080808]/52">
-                No private requests yet. Completed briefings will appear here as studio records.
-              </p>
-            ) : (
-              leads.map((lead, index) => (
-                <motion.article
-                  key={lead.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-8% 0px" }}
-                  transition={{ duration: 0.48, delay: index * 0.025, ease: [0.22, 1, 0.36, 1] }}
-                  className="ledger-record grid gap-8 border-b border-[#080808]/18 py-7 lg:grid-cols-[0.34fr_1fr]"
-                >
-                  <div className="grid gap-5 sm:grid-cols-[0.65fr_1fr] lg:block">
-                    <div>
-                      <p className="mb-2 text-[10px] uppercase text-[#080808]/38">State</p>
-                      <select
-                        value={lead.status}
-                        onChange={(event) => updateLeadStatus(lead.id, event.target.value as LeadStatus)}
-                        className="h-9 w-32 border-0 border-b border-[#080808]/24 bg-transparent px-0 text-sm text-[#070707] outline-none transition focus:border-[#080808]"
-                      >
-                        {(["New", "Contacted", "Booked", "Delivered"] as LeadStatus[]).map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
+          <Reveal delay={0.08}>
+            <div className="border-t border-[#080808]/24">
+              {leads.length === 0 ? (
+                <p className="border-b border-[#080808]/18 py-10 text-base leading-8 text-[#080808]/52">
+                  {siteContent.ledger.emptyText}
+                </p>
+              ) : (
+                leads.map((lead, index) => (
+                  <motion.article
+                    key={lead.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-8% 0px" }}
+                    transition={{ duration: 0.48, delay: index * 0.025, ease: [0.22, 1, 0.36, 1] }}
+                    className="ledger-record grid gap-8 border-b border-[#080808]/18 py-7 lg:grid-cols-[0.34fr_1fr]"
+                  >
+                    <div className="grid gap-5 sm:grid-cols-[0.65fr_1fr] lg:block">
+                      <div>
+                        <p className="mb-2 text-[10px] uppercase text-[#080808]/38">{siteContent.ledger.statusLabel}</p>
+                        <select
+                          value={lead.status}
+                          onChange={(event) => updateLeadStatus(lead.id, event.target.value as LeadStatus)}
+                          className="h-9 w-40 border-0 border-b border-[#080808]/24 bg-transparent px-0 text-sm text-[#070707] outline-none transition focus:border-[#080808]"
+                        >
+                          {siteContent.ledger.statusOptions.map((status) => (
+                            <option key={status.value} value={status.value}>
+                              {status.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="lg:mt-8">
+                        <p className="mb-2 text-[10px] uppercase text-[#080808]/38">{siteContent.ledger.contactLabel}</p>
+                        <p className="text-sm text-[#070707]">{lead.name}</p>
+                        <p className="text-sm text-[#080808]/54">{lead.contact}</p>
+                      </div>
                     </div>
-                    <div className="lg:mt-8">
-                      <p className="mb-2 text-[10px] uppercase text-[#080808]/38">Contact</p>
-                      <p className="text-sm text-[#070707]">{lead.name}</p>
-                      <p className="text-sm text-[#080808]/54">{lead.contact}</p>
-                    </div>
-                  </div>
 
-                  <div className="grid gap-7 md:grid-cols-[0.42fr_1fr]">
-                    <div>
-                      <p className="mb-3 text-[10px] uppercase text-[#080808]/38">Request 0{index + 1}</p>
-                      <h3 className="text-3xl leading-none text-[#070707]">{lead.sessionType}</h3>
-                      <p className="mt-4 text-sm text-[#080808]/54">{lead.date}</p>
+                    <div className="grid gap-7 md:grid-cols-[0.42fr_1fr]">
+                      <div>
+                        <p className="mb-3 text-[10px] uppercase text-[#080808]/38">
+                          {siteContent.ledger.requestLabel} 0{index + 1}
+                        </p>
+                        <h3 className="text-3xl leading-none text-[#070707]">{lead.sessionType}</h3>
+                        <p className="mt-4 text-sm text-[#080808]/54">{lead.date}</p>
+                      </div>
+                      <p className="max-w-3xl text-base leading-8 text-[#080808]/58">{lead.briefing}</p>
                     </div>
-                    <p className="max-w-3xl text-base leading-8 text-[#080808]/58">{lead.briefing}</p>
-                  </div>
-                </motion.article>
-              ))
-            )}
-          </div>
-        </Reveal>
-      </section>
+                  </motion.article>
+                ))
+              )}
+            </div>
+          </Reveal>
+        </section>
+      ) : null}
 
       <section id="contact" className="relative min-h-[100svh] overflow-hidden bg-[#070707] text-white">
         <CinematicImage
@@ -532,7 +580,7 @@ function Header({ activeSection }: { activeSection: string }) {
           ))}
         </div>
         <a href="#briefing" className="editorial-link text-white">
-          Collaborate
+          {siteContent.header.ctaLabel}
         </a>
       </nav>
     </motion.header>
@@ -558,7 +606,7 @@ function EditionRail({ activeSection }: { activeSection: string }) {
           {labels[activeSection] ?? "34Studios"}
         </motion.span>
         <span className="h-px w-8 bg-white/34" />
-        <span>34S / 001</span>
+        <span>{siteContent.editionRail.code}</span>
       </div>
     </motion.aside>
   );
@@ -627,12 +675,14 @@ function BookingInput({
             type="button"
             role="radio"
             aria-checked={value === option}
-            aria-label={`${option}${value === option ? ", selected" : ""}`}
+            aria-label={`${option}${value === option ? `, ${siteContent.booking.selectedAriaLabel}` : ""}`}
             onClick={() => onChange(option)}
             className={`brief-option ${value === option ? "text-white" : "text-white/42"}`}
           >
             <span>{option}</span>
-            <span aria-hidden="true">{value === option ? "Selected" : "Choose"}</span>
+            <span aria-hidden="true">
+              {value === option ? siteContent.booking.selectedOptionLabel : siteContent.booking.chooseOptionLabel}
+            </span>
           </button>
         ))}
       </div>

@@ -10,6 +10,8 @@ export type BookingDataKey =
   | "name"
   | "contact";
 
+export type BookingData = Record<BookingDataKey, string>;
+
 export type BookingStepContent = {
   key: BookingDataKey;
   label: string;
@@ -18,128 +20,152 @@ export type BookingStepContent = {
   options?: string[];
 };
 
-export type LeadContent = {
+export type LeadContent = BookingData & {
   id: string;
   status: LeadStatus;
-  sessionType: string;
-  date: string;
-  location: string;
-  people: string;
-  style: string;
-  budget: string;
-  name: string;
-  contact: string;
   createdAt: string;
   briefing: string;
+};
+
+type LeadStatusContent = {
+  value: LeadStatus;
+  label: string;
 };
 
 export const brandContact = {
   name: "34Studios",
   handle: "@34studios",
-  email: "antoniodominguez29@icloud.com",
+  email: "34studios.photo@gmail.com",
   phone: "+49 1624804647",
   whatsappHref: "https://wa.me/491624804647",
   instagramHref: "https://instagram.com/34studios",
-  base: "Mosbach / Baden-Württemberg / Germany"
+  base: "Mosbach / Baden-Württemberg / Deutschland"
 };
 
 export const siteContent = {
-  storageKey: "34studios-production-leads-v1",
+  storageKey: "34studios-de-leads-v1",
   brand: brandContact,
+  metadata: {
+    title: "34Studios | Bild als Sprache",
+    description:
+      "34Studios ist ein visuelles Studio für editoriale Produktionen, leise Porträts und visuelle Narrative aus Identität, Präsenz und menschlicher Beobachtung."
+  },
+  header: {
+    ctaLabel: "Anfrage"
+  },
   navItems: [
-    { href: "#work", label: "Work" },
+    { href: "#work", label: "Arbeiten" },
     { href: "#about", label: "Über mich" },
-    { href: "#collaborations", label: "Collaborations" },
-    { href: "#briefing", label: "Briefing" },
-    { href: "#studio-ledger", label: "Ledger" },
-    { href: "#contact", label: "Contact" }
+    { href: "#collaborations", label: "Zusammenarbeit" },
+    { href: "#briefing", label: "Anfrage" },
+    { href: "#contact", label: "Kontakt" }
   ],
   sectionLabels: {
-    home: "Cover",
-    work: "Selected Work",
+    home: "Titel",
+    work: "Ausgewählte Arbeiten",
     about: "Über mich",
     collaborations: "Zusammenarbeit",
-    briefing: "Briefing",
-    "studio-ledger": "Studio Ledger",
-    contact: "Contact"
+    briefing: "Editorial Briefing",
+    "studio-ledger": "Studio Archiv",
+    contact: "Kontakt"
+  },
+  editionRail: {
+    code: "34S / 001"
   },
   hero: {
     backgroundWord: "STUDIOS",
-    eyebrowLeft: "34Studios / Issue 001",
-    eyebrowRight: "Based in Mosbach / Germany",
-    deck: "Visual narratives shaped by observation, identity and quiet human detail.",
+    eyebrowLeft: "34Studios / Ausgabe 001",
+    eyebrowRight: "Mosbach / Deutschland",
+    deck: "Visuelle Erzählungen aus Beobachtung, Identität und leiser menschlicher Nähe.",
     titleTop: "34",
     titleBottom: "Studios",
     image: "/images/34studios-cover-portrait.jpg",
-    imageAlt: "Black-and-white editorial portrait of a woman holding a fan in an open field",
-    captionLeft: "Identity / Presence / Image as language",
-    captionRight: "Issue 001",
-    primaryCta: { label: "Enter the issue", href: "#work" },
-    secondaryCta: { label: "Start a collaboration", href: "#briefing" }
+    imageAlt: "Schwarz-weißes Editorial-Porträt einer Frau mit Fächer auf offenem Feld",
+    captionLeft: "Identität / Präsenz / Bild als Sprache",
+    captionRight: "Ausgabe 001",
+    primaryCta: { label: "Ausgabe ansehen", href: "#work" },
+    secondaryCta: { label: "Zusammenarbeit anfragen", href: "#briefing" }
   },
   work: {
-    kicker: "Selected Work",
-    title: "Images that leave room for identity, silence and interpretation.",
+    kicker: "Ausgewählte Arbeiten",
+    title: "Bilder, die Raum für Identität, Stille und Deutung lassen.",
     intro:
-      "A restrained selection of portraiture, figure studies and visual stories shaped by distance, light and direction.",
+      "Eine reduzierte Auswahl aus Porträts, Körperstudien und visuellen Erzählungen. Geformt durch Distanz, Licht und Richtung.",
     items: [
       {
-        category: "Portrait",
+        category: "Porträt",
         image: "/images/34studios-work-editorial.jpg",
-        imageAlt: "Close editorial portrait with direct gaze and restrained light",
-        title: "Face as Atmosphere",
-        note: "Quiet portraiture, controlled gaze, a refusal to decorate.",
-        issue: "Frame 01"
+        imageAlt: "Nahes Editorial-Porträt mit direktem Blick und zurückhaltendem Licht",
+        title: "Gesicht als Atmosphäre",
+        note: "Leise Porträtarbeit, kontrollierter Blick, keine Dekoration.",
+        issue: "Motiv 01"
       },
       {
-        category: "Figure",
+        category: "Körperstudie",
         image: "/images/34studios-work-figure.jpg",
-        imageAlt: "Minimal figure study shaped by posture, skin and negative space",
-        title: "Body as Line",
-        note: "A study in posture, skin, silence and editorial restraint.",
-        issue: "Frame 02"
+        imageAlt: "Reduzierte Körperstudie mit Haltung, Haut und negativem Raum",
+        title: "Körper als Linie",
+        note: "Eine Studie über Haltung, Haut, Stille und editoriale Zurückhaltung.",
+        issue: "Motiv 02"
       },
       {
-        category: "Red Study",
+        category: "Rotstudie",
         image: "/images/34studios-work-red-study.jpg",
-        imageAlt: "Editorial portrait in red light with a controlled emotional tone",
-        title: "Red Room",
-        note: "Color as pressure, not ornament. A controlled emotional temperature.",
-        issue: "Frame 03"
+        imageAlt: "Editoriales Porträt in rotem Licht mit kontrollierter emotionaler Spannung",
+        title: "Roter Raum",
+        note: "Farbe als Druck, nicht als Schmuck. Eine bewusst gehaltene Temperatur.",
+        issue: "Motiv 03"
       },
       {
-        category: "Identity",
+        category: "Identität",
         image: "/images/34studios-work-outerwear.jpg",
-        imageAlt: "Frontal portrait study with outerwear, distance and presence",
-        title: "Outer Layer",
-        note: "Style, distance and presence held in a single frontal frame.",
-        issue: "Frame 04"
+        imageAlt: "Frontale Porträtstudie mit Mantel, Distanz und Präsenz",
+        title: "Äußere Schicht",
+        note: "Stil, Abstand und Präsenz in einem direkten Bild.",
+        issue: "Motiv 04"
       }
     ]
   },
   about: {
     kicker: "Über mich",
-    title: "I learned to look before I learned to call it photography.",
+    title: "Ich habe gelernt, hinzusehen, bevor ich es Fotografie nannte.",
     statement:
-      "Born in Barcelona and based in Germany since 2021, Abraham Antonio Marzouk Domínguez builds images from observation, culture and human proximity.",
+      "Ich wurde in Barcelona geboren und lebe seit 2021 in Deutschland. Meine Bilder entstehen aus Beobachtung, kultureller Spannung und Nähe zum Menschen.",
     image: "/images/34studios-about-antonio.jpg",
-    imageAlt: "Portrait of Abraham Antonio Marzouk Domínguez seated in a car",
-    paragraphs: [
-      "Before photography, his path led into Pflege. Not as a brand story, but as a human chapter: closeness, responsibility and the need to act where help was missing.",
-      "His origin is not a single place. It is a mosaic of roots, languages and traditions. What could feel divided becomes freedom: a way of seeing identity as movement.",
-      "Photography became the tool for what had always been there: small nuances, background faces, the unsaid between two people. Self-taught by conviction, he looks for depth rather than validation.",
-      "34Studios exists for visual narratives that connect emotion and identity - for magazines with Haltung, brands seeking authenticity and people who want to be seen, not decorated."
+    imageAlt: "Porträt von Abraham Antonio Marzouk Domínguez sitzend in einem Auto",
+    meta: ["Barcelona", "Deutschland seit 2021", "Pflege / Menschlichkeit", "Autodidaktisches Lernen"],
+    chapters: [
+      {
+        label: "Nähe",
+        text:
+          "Bevor die Fotografie einen Namen bekam, war da die Pflege: ein Alltag nah am Menschen, an Verletzlichkeit, Verantwortung und Momenten, in denen man wirklich aufmerksam sein muss."
+      },
+      {
+        label: "Wurzeln",
+        text:
+          "Meine Herkunft ist kein einzelner Ort. Sie ist ein Geflecht aus Sprachen, Traditionen und Blickwinkeln. Genau daraus entsteht meine Freiheit, Identität nicht festzuhalten, sondern in Bewegung zu zeigen."
+      },
+      {
+        label: "Blick",
+        text:
+          "Ich habe mir Fotografie autodidaktisch angeeignet, nicht aus Distanz, sondern aus einem Bedürfnis heraus: Gesichter, Pausen, Gesten und das Ungesagte zwischen Menschen sichtbar zu machen."
+      },
+      {
+        label: "Sprache",
+        text:
+          "Mit 34Studios suche ich visuelle Narrative, die Emotion und Identität verbinden - für Magazine mit Haltung, kulturelle Projekte und Menschen, die nicht dekoriert, sondern gesehen werden wollen."
+      }
     ]
   },
   collaborations: {
     kicker: "Interessen & Zusammenarbeit",
-    title: "For editors, magazines and cultural projects that understand image as language.",
+    title: "Für Redaktionen, Magazine und kulturelle Projekte, die Bild als Sprache verstehen.",
     image: "/images/34studios-collaboration-reportage.jpg",
-    imageAlt: "Black-and-white portrait seen from below through a wooden structure",
+    imageAlt: "Schwarz-weißes Porträt von unten durch eine hölzerne Struktur gesehen",
     paragraphs: [
-      "34Studios is open to redaktionen, magazines and cultural projects that value visual quality, Haltung and a clear photographic language.",
-      "The focus is on editorial productions, portraits and visual reportages where photography does not simply illustrate, but tells.",
-      "Available for redaktionelle Aufträge, portraits and project-based collaborations in Baden-Württemberg and bundesweit."
+      "Ich arbeite mit Redaktionen, Magazinen und kulturellen Projekten, die visuelle Qualität, Haltung und eine klare fotografische Sprache suchen.",
+      "Im Mittelpunkt stehen editoriale Produktionen, Porträts und visuelle Reportagen, in denen Fotografie nicht nur illustriert, sondern erzählt.",
+      "Verfügbar für redaktionelle Aufträge, Porträts und projektbasierte Zusammenarbeit in Baden-Württemberg und bundesweit."
     ],
     areas: [
       "Redaktionen",
@@ -152,93 +178,115 @@ export const siteContent = {
     ]
   },
   booking: {
-    kicker: "Commission Briefing",
-    title: "A first note for stories with depth.",
-    intro: "Sparse by design, precise by necessity. A quiet beginning before the conversation.",
-    progressLabel: "Question",
-    liveBriefLabel: "Live brief",
-    emptyBrief: "The studio brief will appear once the request is complete.",
-    requiredError: "This detail is required.",
-    submitLabel: "Create briefing",
-    continueLabel: "Continue",
-    backLabel: "Back",
+    kicker: "Editorial Briefing",
+    title: "Eine erste Notiz für Geschichten mit Tiefe.",
+    intro: "Reduziert in der Form, präzise im Inhalt. Ein leiser Anfang vor dem Gespräch.",
+    progressLabel: "Frage",
+    liveBriefLabel: "Erstes Briefing",
+    emptyBrief: "Das Briefing entsteht, sobald die Anfrage vollständig ist.",
+    successMessage: "Danke. Deine Anfrage wurde als erstes Briefing gespeichert. Ich melde mich persönlich.",
+    requiredError: "Diese Angabe fehlt noch.",
+    submitLabel: "Briefing erstellen",
+    continueLabel: "Weiter",
+    backLabel: "Zurück",
+    chooseOptionLabel: "Wählen",
+    selectedOptionLabel: "Ausgewählt",
+    selectedAriaLabel: "ausgewählt",
+    createBriefing: (data: BookingData) =>
+      `${data.sessionType} in ${data.location}, geplant für ${data.date}, mit ${data.people} Person(en) im Bild. Visuelle Richtung: ${data.style}. Produktionsrahmen: ${data.budget}. Kontakt: ${data.name}, ${data.contact}.`,
     steps: [
       {
         key: "sessionType",
-        label: "Collaboration type",
-        prompt: "What kind of visual narrative is this?",
+        label: "Art der Zusammenarbeit",
+        prompt: "Welche visuelle Erzählung entsteht hier?",
         kind: "select",
         options: [
-          "Editorial Commission",
-          "Portrait / Quiet Portraiture",
-          "Visual Reportage",
-          "Cultural Project",
-          "Wedding / Private Ritual"
+          "Editoriale Produktion",
+          "Porträt / leise Porträtarbeit",
+          "Visuelle Reportage",
+          "Kulturelles Projekt",
+          "Hochzeit / privates Ritual"
         ]
       },
       {
         key: "date",
-        label: "Desired date",
-        prompt: "When should it exist?",
+        label: "Wunschdatum",
+        prompt: "Wann soll sie stattfinden?",
         kind: "text"
       },
       {
         key: "location",
-        label: "City / place",
-        prompt: "Where does the story happen?",
+        label: "Ort",
+        prompt: "Wo findet die Geschichte statt?",
         kind: "text"
       },
       {
         key: "people",
-        label: "People",
-        prompt: "How many people are in frame?",
+        label: "Menschen",
+        prompt: "Wie viele Menschen stehen im Bild?",
         kind: "number"
       },
       {
         key: "style",
-        label: "Desired atmosphere",
-        prompt: "Describe the visual language.",
+        label: "Atmosphäre",
+        prompt: "Welche Atmosphäre soll das Bild tragen?",
         kind: "textarea"
       },
       {
         key: "budget",
-        label: "Approx. budget",
-        prompt: "What is the production range?",
+        label: "Rahmen",
+        prompt: "Welcher Produktionsrahmen ist vorgesehen?",
         kind: "select",
-        options: ["Under 500 EUR", "500 - 1,000 EUR", "1,000 - 2,500 EUR", "2,500 EUR+"]
+        options: ["Unter 500 EUR", "500 - 1.000 EUR", "1.000 - 2.500 EUR", "2.500 EUR+"]
       },
       {
         key: "name",
         label: "Name",
-        prompt: "Who should be addressed?",
+        prompt: "An wen darf ich mich wenden?",
         kind: "text"
       },
       {
         key: "contact",
-        label: "Email / phone",
-        prompt: "Where can 34Studios reply?",
+        label: "E-Mail / Telefon",
+        prompt: "Wie kann ich antworten?",
         kind: "text"
       }
     ] satisfies BookingStepContent[]
   },
+  ledger: {
+    kicker: "Studio Archiv",
+    title: "Anfragen, leise geordnet.",
+    countLabel: (count: number) => `${count} ${count === 1 ? "Anfrage" : "Anfragen"}`,
+    emptyText: "Noch keine Anfragen. Vollständige Briefings erscheinen hier als interne Studio-Notizen.",
+    statusLabel: "Status",
+    contactLabel: "Kontakt",
+    requestLabel: "Anfrage",
+    initialStatus: "New" as LeadStatus,
+    statusOptions: [
+      { value: "New", label: "Eingang" },
+      { value: "Contacted", label: "In Gespräch" },
+      { value: "Booked", label: "Bestätigt" },
+      { value: "Delivered", label: "Abgeschlossen" }
+    ] satisfies LeadStatusContent[]
+  },
   demoLeads: [] satisfies LeadContent[],
   contact: {
-    kicker: "Contact",
-    title: "Begin with a note. The image can follow.",
+    kicker: "Kontakt",
+    title: "Schreib eine erste Notiz. Das Bild kann folgen.",
     image: "/images/34studios-contact-portrait.jpg",
-    imageAlt: "Warm editorial portrait with sunglasses and a silk scarf",
+    imageAlt: "Warmes Editorial-Porträt mit Sonnenbrille und Seidentuch",
     intro:
-      "Available for editorial commissions, portraits and project-based collaborations in Baden-Württemberg and bundesweit.",
+      "Offen für editoriale Produktionen, Porträts und projektbasierte Zusammenarbeit in Baden-Württemberg und bundesweit.",
     lines: [
       { label: "Instagram", value: brandContact.handle, href: brandContact.instagramHref },
-      { label: "Email", value: brandContact.email, href: `mailto:${brandContact.email}` },
+      { label: "E-Mail", value: brandContact.email, href: `mailto:${brandContact.email}` },
       { label: "WhatsApp", value: brandContact.phone, href: brandContact.whatsappHref },
-      { label: "Base", value: "Mosbach / Germany" }
+      { label: "Ort", value: "Mosbach / Deutschland" }
     ]
   },
   footer: {
     left: "34Studios",
-    center: "Image as language / Visual narratives",
-    right: "Issue 001 / Digital Presence"
+    center: "Bild als Sprache / Visuelle Narrative",
+    right: "Ausgabe 001 / Digitale Präsenz"
   }
 };
